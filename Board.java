@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
-/* Original Board class by Stephen Maynard [originally titled CheckerRules]
- * Reworked and cleaned up by Mykola Nikitin
- * Seriously, Stephen, use tabs! They're much easier to keep track of!
- **************************************************************************/
+/* Original Board class by Stephen Maynard [originally titled CheckerRules] * 
+ * Reworked and cleaned up by Mykola Nikitin                                * 
+ * Seriously, Stephen, use tabs! They're much easier to keep track of!      * 
+ * ************************************************************************ */
 
 public class Board {
 
-	static final int
+	public static final int
 		EMPTY = 0,
 		RED = 1,
 		RED_KING = 2,
@@ -19,7 +19,7 @@ public class Board {
 	Board() {
 		board = new int[8][8];
 		initGame();
-	}  // end Board()
+	}  // end default constructor
 
 	Board(Board r){
 		board = new int[8][8];
@@ -28,7 +28,7 @@ public class Board {
 				board[i][j] = r.board[i][j];
 			}
 		}
-	}
+	} // end copy constructor
       
 	Board(Board r, CheckersMove move){
 		board = new int[8][8];
@@ -38,7 +38,7 @@ public class Board {
       		 	}
 		}
 		this.makeMove(move);
-	}
+	} // end move constructor
 
 	void initGame() {
 		for (int row = 0; row < 8; row++) {
@@ -73,12 +73,12 @@ public class Board {
 	private void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
 		board[toRow][toCol] = board[fromRow][fromCol];
 		board[fromRow][fromCol] = EMPTY;
-		if (fromRow - toRow == 2 || fromRow - toRow == -2) {
+		if (fromRow - toRow == 2 || fromRow - toRow == -2) { // If it's a jump, clean the spot.
 			int jumpRow = (fromRow + toRow) / 2;
 			int jumpCol = (fromCol + toCol) / 2;
 			board[jumpRow][jumpCol] = EMPTY;
 		}
-		if (toRow == 0 && board[toRow][toCol] == RED)
+		if (toRow == 0 && board[toRow][toCol] == RED) // King me!
 			board[toRow][toCol] = RED_KING;
 		if (toRow == 7 && board[toRow][toCol] == BLACK)
 			board[toRow][toCol] = BLACK_KING;

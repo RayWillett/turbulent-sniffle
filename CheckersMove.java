@@ -1,6 +1,6 @@
-/* CheckersMove.java written by Stephen Maynard
+/* CheckersMove.java written by Stephen Maynard *
  * 
- * ******************************************* */
+ * ******************************************** */
 public class CheckersMove {
 	int fromRow, fromCol;
 	int toRow, toCol;
@@ -16,6 +16,10 @@ public class CheckersMove {
 
 	public String toString(){
 		return (fromRow*8+fromCol)/2 + ", " + (toRow*8+toCol)/2;
+	} // end toString()
+	
+	public CheckersMove fromString(String s){ // TODO
+		return null;
 	}
 }  // end class CheckersMove.
 
