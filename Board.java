@@ -202,5 +202,18 @@ public class Board {
 			return true;
 		}
 	}  // end canJump()
+	
+	public int[] asLinearArray(){ //TODO
+		int tBoard[] = new int[32];
+		for(int i = 0; i < 32; i++) tBoard[i]=EMPTY;
+		for(int row = 0; row < 8; row++){ // your boat, gently down the stream!
+			for(int col = 0; col < 8; col++){
+				if(board[row][col]!=EMPTY)
+					tBoard[col/2+row*4]=board[row][col];
+			}
+		}
+		return tBoard;
+		//(fromCol/2+fromRow*4+1)
+	}
 } // end class Board
 

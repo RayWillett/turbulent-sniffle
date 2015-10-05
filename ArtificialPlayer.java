@@ -2,14 +2,13 @@
  *
  * *********************************************** */
 public class ArtificialPlayer{
-	static final int
-		VOID = 0,
-		RED = 1,
-		BLACK = 2;
+	int player;
 	
 	static final double
 		RED_POS_BIAS = 1.0,
 		BLACK_POS_BIAS = 1.0;
+	
+	
 	
 	public ArtificialPlayer(int player){
 		this.player=player;
@@ -19,18 +18,22 @@ public class ArtificialPlayer{
 		return b.getLegalMovesFor(player)[0];
 	}
 	
-	public CheckersMove getMove(Board b){
+	public CheckersMove getFOMove(Board b){
 		CheckersMove moveCandidates[] = b.getLegalMovesFor(player);
 		Board tempBoards[] = new Board[moveCandidates.length];
 		double scores[] = new double[moveCandidates.length];
+		int maxScore=0;
 		for(int i = 0; i < moveCandidates.length; i++){
 			tempBoards[i] = new Board(b, moveCandidates[i]);
-			evaluateState(tempBoards[i]);
+			scores[i] = evaluateState(tempBoards[i]);
+			if(scores[i]>scores[maxScore])
+				maxScore = i;
 		}
+		return moveCandidates[maxScore];
 	}
 	
 	public double evaluateState(Board b){
-		double tout;
+		double tout = 0.0;
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
 				if(player==Board.RED){
