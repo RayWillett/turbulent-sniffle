@@ -9,29 +9,32 @@ public class CheckerRules {
                 BLACK = 3,
                 BLACK_KING = 4;
 
-      int[][] board;
+      //int[][] board;
+      
+      static int lastPlayer;
+      static CheckersMove lastMove;
 
       CheckerRules() {
-         board = new int[8][8];
-         initGame();
+         //board = new int[8][8];
+         //initGame();
       }  // end CheckerRules()
 
 	  /*************************************************************************************************
 	   *
 	   */
-      void initGame() {
+      static void initGame() {
          for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                if ( row % 2 != col % 2 ) {
                   if (row < 3)
-                     board[row][col] = BLACK;
+                     Main.state[row][col] = BLACK;
                   else if (row > 4)
-                     board[row][col] = RED;
+                     Main.state[row][col] = RED;
                   else
-                     board[row][col] = EMPTY;
+                     Main.state[row][col] = EMPTY;
                }
                else {
-                  board[row][col] = EMPTY;
+                  Main.state[row][col] = EMPTY;
                }
             }
          }
@@ -40,45 +43,47 @@ public class CheckerRules {
 	  /*************************************************************************************************
 	   *
 	   */
-      public int getPieceAt(int row, int col) {
-         return board[row][col];
+      public static int getPieceAt(int row, int col) {
+         return Main.state[row][col];
       }  // end getPieceAt()
 
 	  /*************************************************************************************************
 	   *
 	   */
-      public void setPieceAt(int row, int col, int piece) {
-         board[row][col] = piece;
+      public static void setPieceAt(int row, int col, int piece) {
+         Main.state[row][col] = piece;
       }  // end setPieceAt()
 
 	  /*************************************************************************************************
 	   *
 	   */
-      public void makeMove(CheckersMove move) {
+      public static void makeMove(CheckersMove move) {
          makeMove(move.fromRow, move.fromCol, move.toRow, move.toCol);
       }  // end makeMove()
 
 	  /*************************************************************************************************
 	   *
 	   */
-      private void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
-         board[toRow][toCol] = board[fromRow][fromCol];
-         board[fromRow][fromCol] = EMPTY;
+      private static void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
+      	 lastPlayer = Main.state[fromRow][fromCol]; // Modified to include some tracking information
+      	 lastMove = new CheckersMove(fromRow,fromCol,toRow,toCol);
+         Main.state[toRow][toCol] = Main.state[fromRow][fromCol];
+         Main.state[fromRow][fromCol] = EMPTY;
          if (fromRow - toRow == 2 || fromRow - toRow == -2) {
             int jumpRow = (fromRow + toRow) / 2;
             int jumpCol = (fromCol + toCol) / 2;
-            board[jumpRow][jumpCol] = EMPTY;
+            Main.state[jumpRow][jumpCol] = EMPTY;
          }
-         if (toRow == 0 && board[toRow][toCol] == RED)
-            board[toRow][toCol] = RED_KING;
-         if (toRow == 7 && board[toRow][toCol] == BLACK)
-            board[toRow][toCol] = BLACK_KING;
+         if (toRow == 0 && Main.state[toRow][toCol] == RED)
+            Main.state[toRow][toCol] = RED_KING;
+         if (toRow == 7 && Main.state[toRow][toCol] == BLACK)
+            Main.state[toRow][toCol] = BLACK_KING;
       }  // end makeMove()
 
 	  /*************************************************************************************************
 	   *
 	   */
-      CheckersMove[] getLegalMovesFor(int player) {
+      static CheckersMove[] getLegalMovesFor(int player) {
 
          if (player != RED && player != BLACK)
             return null;
@@ -91,9 +96,22 @@ public class CheckerRules {
 
          ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
 
-         for (int row = 0; row < 8; row++) {
+
+	 if(lastPlayer == player){ // Added logic to correct movement and prevent incorrect multiple jumps
+	     int row = lastMove.toRow;
+	     int col = lastMove.toCol;
+	 	  if (canJump(player, row, col, row+1, col+1, row+2, col+2))
+                     moves.add(new CheckersMove(row, col, row+2, col+2));
+                  if (canJump(player, row, col, row-1, col+1, row-2, col+2))
+                     moves.add(new CheckersMove(row, col, row-2, col+2));
+                  if (canJump(player, row, col, row+1, col-1, row+2, col-2))
+                     moves.add(new CheckersMove(row, col, row+2, col-2));
+                  if (canJump(player, row, col, row-1, col-1, row-2, col-2))
+                     moves.add(new CheckersMove(row, col, row-2, col-2));
+	 }
+         else{ for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-               if (board[row][col] == player || board[row][col] == playerKing) {
+               if (Main.state[row][col] == player || Main.state[row][col] == playerKing) {
                   if (canJump(player, row, col, row+1, col+1, row+2, col+2))
                      moves.add(new CheckersMove(row, col, row+2, col+2));
                   if (canJump(player, row, col, row-1, col+1, row-2, col+2))
@@ -109,7 +127,7 @@ public class CheckerRules {
          if (moves.size() == 0) {
             for (int row = 0; row < 8; row++) {
                for (int col = 0; col < 8; col++) {
-                  if (board[row][col] == player || board[row][col] == playerKing) {
+                  if (Main.state[row][col] == player || Main.state[row][col] == playerKing) {
                      if (canMove(player,row,col,row+1,col+1))
                         moves.add(new CheckersMove(row,col,row+1,col+1));
                      if (canMove(player,row,col,row-1,col+1))
@@ -121,7 +139,7 @@ public class CheckerRules {
                   }
                }
             }
-         }
+         }}//end else;
 
          if (moves.size() == 0)
             return null;
@@ -136,7 +154,7 @@ public class CheckerRules {
 	  /*************************************************************************************************
 	   *
 	   */
-      CheckersMove[] getLegalJumpsFrom(int player, int row, int col) {
+      static CheckersMove[] getLegalJumpsFrom(int player, int row, int col) {
          if (player != RED && player != BLACK)
             return null;
          int playerKing;
@@ -145,7 +163,7 @@ public class CheckerRules {
          else
             playerKing = BLACK_KING;
          ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
-         if (board[row][col] == player || board[row][col] == playerKing) {
+         if (Main.state[row][col] == player || Main.state[row][col] == playerKing) {
             if (canJump(player, row, col, row+1, col+1, row+2, col+2))
                moves.add(new CheckersMove(row, col, row+2, col+2));
             if (canJump(player, row, col, row-1, col+1, row-2, col+2))
@@ -168,21 +186,21 @@ public class CheckerRules {
 	  /*************************************************************************************************
 	   *
 	   */
-      private boolean canMove(int player, int r1, int c1, int r2, int c2) {
+      private static boolean canMove(int player, int r1, int c1, int r2, int c2) {
 
          if (r2 < 0 || r2 >= 8 || c2 < 0 || c2 >= 8)
             return false;
 
-         if (board[r2][c2] != EMPTY)
+         if (Main.state[r2][c2] != EMPTY)
             return false;
 
          if (player == RED) {
-            if (board[r1][c1] == RED && r2 > r1)
+            if (Main.state[r1][c1] == RED && r2 > r1)
                return false;
             return true;
          }
          else {
-            if (board[r1][c1] == BLACK && r2 < r1)
+            if (Main.state[r1][c1] == BLACK && r2 < r1)
                return false;
             return true;
          }
@@ -191,29 +209,75 @@ public class CheckerRules {
 	  /*************************************************************************************************
 	   *
 	   */
-      private boolean canJump(int player, int r1, int c1, int r2, int c2, int r3, int c3) {
+      public static boolean canMove(int player, CheckersMove m) {
 
-         if (r3 < 0 || r3 >= 8 || c3 < 0 || c3 >= 8)
+         if (m.toRow < 0 || m.toRow >= 8 || m.toCol < 0 || m.toCol >= 8)
             return false;
 
-         if (board[r3][c3] != EMPTY)
+         if (Main.state[m.toRow][m.toCol] != EMPTY)
             return false;
 
          if (player == RED) {
-            if (board[r1][c1] == RED && r3 > r1)
-               return false;
-            if (board[r2][c2] != BLACK && board[r2][c2] != BLACK_KING)
+            if (Main.state[m.fromRow][m.fromCol] == RED && m.toRow > m.fromRow)
                return false;
             return true;
          }
          else {
-            if (board[r1][c1] == BLACK && r3 < r1)
+            if (Main.state[m.fromRow][m.fromCol] == BLACK && m.toRow < m.fromRow)
                return false;
-            if (board[r2][c2] != RED && board[r2][c2] != RED_KING)
+            return true;
+         }
+      } // end canMove()
+
+	  /*************************************************************************************************
+	   *
+	   */
+      private static boolean canJump(int player, int r1, int c1, int r2, int c2, int r3, int c3) {
+
+         if (r3 < 0 || r3 >= 8 || c3 < 0 || c3 >= 8)
+            return false;
+
+         if (Main.state[r3][c3] != EMPTY)
+            return false;
+
+         if (player == RED) {
+            if (Main.state[r1][c1] == RED && r3 > r1)
+               return false;
+            if (Main.state[r2][c2] != BLACK && Main.state[r2][c2] != BLACK_KING)
+               return false;
+            return true;
+         }
+         else {
+            if (Main.state[r1][c1] == BLACK && r3 < r1)
+               return false;
+            if (Main.state[r2][c2] != RED && Main.state[r2][c2] != RED_KING)
                return false;
             return true;
          }
       }  // end canJump()
-      
+
+  	public static int[] asLinearArray(){ //TODO
+  		int tBoard[] = new int[32];
+  		for(int i = 0; i < 32; i++) tBoard[i]=EMPTY;
+  		for(int row = 0; row < 8; row++){ // your boat, gently down the stream!
+  			for(int col = 0; col < 8; col++){
+  				if(Main.state[row][col]!=EMPTY)
+  					tBoard[col/2+row*4]=Main.state[row][col];
+  			}
+  		}
+  		return tBoard;
+  		//(fromCol/2+fromRow*4+1)
+  	}
+  	
+  	public static int[][] as2DArray(int[] board) {
+  		int[][] newBoard = new int[board.length][board.length];
+  		for (int i=1; i<board.length; i++) {
+  			int row = (i-1)/4;
+  			int col = 2*((i-1)%4) + (row+1)%2;
+  			newBoard[row][col] = board[i];
+  			//System.out.println(""+row+","+col);
+  		}
+  		return newBoard;
+  	}
       
    } // end class CheckerRules

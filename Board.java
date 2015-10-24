@@ -21,6 +21,10 @@ public class Board {
 		initGame();
 	}  // end default constructor
 
+	Board(int[][] board) {
+		this.board = board;
+	}
+	
 	Board(Board r){
 		board = new int[8][8];
 		for(int i = 0; i < 8; i++){

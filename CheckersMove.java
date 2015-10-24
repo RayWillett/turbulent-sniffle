@@ -1,5 +1,5 @@
 /* CheckersMove.java written by Stephen Maynard *
- * 
+ * Royally Adapted by Mykola Nikitin
  * ******************************************** */
 public class CheckersMove {
 	int fromRow, fromCol;
@@ -16,15 +16,19 @@ public class CheckersMove {
 		String[] ts;
 		if(s.indexOf("-")!=-1){ // for from-to notation
 			ts=s.split("-");
-		}else ts=s.split(", "); // for from, to notation
+		}else if (s.indexOf(",") != -1) {
+			ts=s.split(","); // for from,to notation			
+		} else {
+			ts=s.split(","); // for from, to notation						
+		}
 		
 		int from = Integer.parseInt(ts[0]); // convert to non-coordinate notation
 		int to = Integer.parseInt(ts[1]);
 		
-		this.fromRow = from/4;
-		this.fromCol = from%4+(1-(fromRow%1));
-		this.toRow =   to/4;
-		this.toCol =   to%4+(1-(toRow%1));
+		this.fromRow = (from-1)/4;
+		this.fromCol = 2*((from-1)%4) + (fromRow+1)%2;
+		this.toRow =   (to-1)/4;
+		this.toCol =   2*((to-1)%4) + (toRow+1)%2;
 	}
 	
 	boolean isJump() {

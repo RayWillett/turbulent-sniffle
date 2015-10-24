@@ -7,14 +7,10 @@ import java.util.Scanner;
  */
 public class Main {
 	
-	public static boolean gameWon = false;
-	public static ArtificialPlayer redAI   = null;
-	public static ArtificialPlayer blackAI = null;
-	
-	static VBoard vboard;
-	static Board b;
-	static int[] state;
-	static Scanner keyboard;
+	// Stop illegal forward reference
+	// TODO implement "moves since last capture", 50 to loss
+	// TODO implement "no jump after kinging
+	// TODO PASS MOVE, verify ONLY SINGLE UNIT JUMPING [Only one piece jumps during the move]
 	
 	public static final int 
 	    EMPTY = 0,
@@ -23,22 +19,51 @@ public class Main {
 	    BLACK = 3,
 	    BLACK_KING = 4;
 	
+	
+	public static boolean gameWon = false;
+	public static int currentPlayer = RED;
+	public static ArtificialPlayer redAI   = null;
+	public static ArtificialPlayer blackAI = null;
+	
+	static VBoard vboard;
+	static Board b;
+	static int[][] state;
+	static Scanner keyboard;
+	
+	static boolean wasJump = false;
+	
 	/**
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
-		keyboard = new Scanner(System.in);
-		
+		// Set up the initial state
 		createGUI();
+		keyboard = new Scanner(System.in); //System.in redirected to vboard
 		getAIPayers();
 		
+		// Game loop
 		while(!gameWon) {
-			blackMove();
-			redMove();
-			return;
+			if(currentPlayer==BLACK)
+				blackMove();
+			else
+				redMove();
+			vboard.update();
+			
+			if(!wasJump) switchPlayers(); // Switch if it wasn't a jump just made
 		}
+	}
+	
+	/**
+	 * Switch players
+	 */
+	private static void switchPlayers(){
+		if(currentPlayer == RED){
+			currentPlayer = BLACK;
+		}
+		else
+			currentPlayer = RED;
 	}
 
 	/**
@@ -46,53 +71,141 @@ public class Main {
 	 */
 	private static void getAIPayers() {
 		if(getYN("Is BLACK an AI player?"))
-			blackAI = new ArtificialPlayer(Board.BLACK);
+			blackAI = new ArtificialPlayer(BLACK);
 		if(getYN("Is RED an AI player?"))
-			redAI = new ArtificialPlayer(Board.RED);
+			redAI = new ArtificialPlayer(RED);
 	}
-
+	
+	/**
+	 * Spit out whether or not they have an actual, you know, move left
+	 */
+	private static boolean moveAndSwitchIfNeeded(CheckersMove m){
+		boolean thisWas = m.isJump();
+		CheckerRules.makeMove(m);
+		return false;
+	}
+	
 	/**
 	 * Get a move from the red team and apply it to the board if it is valid
 	 */
 	private static void redMove() {
-		CheckersMove m;
-		if (redAI!=null) {
-//			generateMoves(board, true);
-		} else {
-			m = new CheckersMove(keyboard.nextLine());
+		// Check if lost
+		if (CheckerRules.getLegalMovesFor(RED) == null) {
+			if(CheckerRules.lastPlayer == RED) {wasJump = false; return;}
+			vboard.println("BLACK WON");
+			gameWon = true;
+			return;
 		}
+		CheckersMove m = null;
+		
+		
+		// Red AI move
+		if (redAI!=null) {
+			// Wait 0.1 sec
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			// Make a move
+			m = redAI.getMove(new Board(state));
+			if(m.isJump()) wasJump = true; // Notice jumps
+			else wasJump = false;
+			vboard.println("RED moved: " + m.toString());
+			CheckerRules.makeMove(m);
+			
+		// Red user move
+		} else {
+			vboard.println("RED player move");
+			try{
+				// Get move from the user. Do some input checking
+				m = new CheckersMove(keyboard.nextLine());
+				if(!CheckerRules.canMove(RED, m)) {
+					vboard.println("Invaild move.");
+					redMove();
+					return;
+				}
+			} catch (Exception e) {
+				vboard.println("Bad input.");
+				redMove();
+				return;
+			}
+			if(m.isJump()) wasJump = true; // Notice jumps
+			else wasJump = false;
+			// Apply the move
+			CheckerRules.makeMove(m);
+		}
+		if(wasJump && CheckerRules.getLegalMovesFor(RED) != null && !CheckerRules.getLegalMovesFor(RED)[0].isJump()) wasJump = false;
 	}
 
 	/**
 	 * Get a move from the black team and apply it to the board if it is valid
 	 */
 	private static void blackMove() {
-		CheckersMove m;
-		if (blackAI!=null) {
-//			generateMoves(board, false);
-		} else {
-			m = new CheckersMove(keyboard.nextLine());
+		// Check if lost
+		if (CheckerRules.getLegalMovesFor(BLACK) == null) {
+			if(CheckerRules.lastPlayer == BLACK) {wasJump = false; return;}
+			vboard.println("RED WON");
+			gameWon = true;
+			return;
 		}
+		CheckersMove m = null;
+		// Black AI move
+		if (blackAI!=null) {
+			// Wait 0.1 sec
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			// Make a move
+			m = blackAI.getMove(new Board(state));
+			if(m.isJump()) wasJump = true; // Notice jumps
+			else wasJump = false;
+			vboard.println("BLACK moved: " + m.toString());
+			CheckerRules.makeMove(m);
+		// Black user move
+		} else {
+			vboard.println("BLACK player move");
+			try{
+				// Get move from the user. Do some input checking
+				m = new CheckersMove(keyboard.nextLine());
+				if(!CheckerRules.canMove(BLACK, m)) {
+					vboard.println("Invaild move.");
+					blackMove();
+					return;
+				}
+			} catch (Exception e) {
+				vboard.println("Bad input.");
+				blackMove();
+				return;
+			}
+			if(m.isJump()) wasJump = true; // Notice jumps
+			else wasJump = false;
+			CheckerRules.makeMove(m);
+		}
+		if(wasJump && CheckerRules.getLegalMovesFor(BLACK) != null && !CheckerRules.getLegalMovesFor(BLACK)[0].isJump()) wasJump = false;
 	}
 
 	/**
 	 * Create the window that will display the board state
 	 */
 	private static void createGUI() {
+		// Initial standard checkers setup. temp[0] is never used
 		int[] temp = {
 				EMPTY,
-				BLACK, BLACK, BLACK, BLACK_KING, 
+				BLACK, BLACK, BLACK, BLACK, 
 				BLACK, BLACK, BLACK, BLACK, 
 				BLACK, BLACK, BLACK, BLACK, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 				RED, RED, RED, RED, 
 				RED, RED, RED, RED, 
-				RED, RED, RED, RED_KING, 
+				RED, RED, RED, RED, 
 		};
-		state = temp;
+		state = CheckerRules.as2DArray(temp);
 		
-		vboard = new VBoard("Checkers", state);
+		vboard = new VBoard("Checkers");
 	}
 	
 	/**
@@ -106,7 +219,7 @@ public class Main {
 		
 		// Wait for valid input
 		while(true) {
-			System.out.print(msg);
+			vboard.println(msg);
 			in = keyboard.nextLine();
 			// Empty strings cause errors
 			if (in.equals("")) {
@@ -119,7 +232,7 @@ public class Main {
 			} else if (in.charAt(0) == 'n') {
 				return false;
 			} else {
-				System.out.println("Invalid input");
+				vboard.println("Invalid input");
 			}
 		}
 	}
