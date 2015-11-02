@@ -11,7 +11,18 @@ public class ArtificialPlayer{
 		THEIR_KING_BIAS = -30.0;
 	
 	// 
+	/*
+	   10   10   10   8
+	 6     9    9    8
+	   8     8     8     5
+	 4    8    9    8
+	   6     9     8     3
+	 2    7    7    6
+	   5     6     5     1
+	 8    10   10   10
 	
+	halve values if you're in risk of being captured [basically cheat and fake adding another level of introspection]
+	*/
 	static int[][] analyzeGrid = { // 1: defensive, 2: offensive
 		{ 0, 1, 0, 1, 0, 1, 0, 1 },
 		{ 1, 0, 0, 0, 0, 0, 0, 0 },
