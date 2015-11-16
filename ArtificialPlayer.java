@@ -7,8 +7,8 @@ public class ArtificialPlayer{
 	static final double
 		OUR_POS_BIAS = 1.0, // piece survival bias
 		THEIR_POS_BIAS = -1.0,
-		OUR_KING_BIAS = 30.0,
-		THEIR_KING_BIAS = -30.0;
+		OUR_KING_BIAS = 5.0,
+		THEIR_KING_BIAS = -5.0;
 	
 	// 
 	/*
@@ -23,15 +23,25 @@ public class ArtificialPlayer{
 	
 	halve values if you're in risk of being captured [basically cheat and fake adding another level of introspection]
 	*/
-	static int[][] analyzeGrid = { // 1: defensive, 2: offensive
-		{ 0, 1, 0, 1, 0, 1, 0, 1 },
-		{ 1, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 2, 0, 2, 0, 1 },
-		{ 1, 0, 2, 0, 2, 0, 0, 0 },
-		{ 0, 0, 0, 2, 0, 2, 0, 1 },
-		{ 1, 0, 2, 0, 2, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 1 },
-		{ 1, 0, 1, 0, 1, 0, 1, 0 } };
+	static int[][] pawnGrid = { 
+			{ 0, 10,  0, 10,  0, 10,  0, 8 },
+			{ 6,  0,  9,  0,  9,  0,  8, 0 },
+			{ 0,  8,  0,  8,  0,  8,  0, 5 },
+			{ 4,  0,  8,  0,  9,  0,  8, 0 },
+			{ 0,  6,  0,  9,  0,  8,  0, 3 },
+			{ 2,  0,  7,  0,  7,  0,  6, 0 },
+			{ 0,  5,  0,  6,  0,  5,  0, 1 },
+			{ 8,  0, 10,  0, 10,  0, 10, 0 } };
+	
+	static int[][] kingGrid = {
+			{ 0,  2,  0,  3,  0,  3,  0, 1 },
+			{ 2,  0,  7,  0,  7,  0,  4, 0 },
+			{ 0,  7,  0,  8,  0,  8,  0, 3 },
+			{ 3,  0,  8,  0,  9,  0,  7, 0 },
+			{ 0,  7,  0,  9,  0,  8,  0, 3 },
+			{ 3,  0,  8,  0,  8,  0,  7, 0 },
+			{ 0,  4,  0,  7,  0,  7,  0, 2 },
+			{ 1,  0,  5,  0,  5,  0,  2, 0 } };
 	
 	//
 	
@@ -80,8 +90,9 @@ public class ArtificialPlayer{
 		double d;
 		int nextPlayer;
 		if(decay==0){
-			if(player==this.player)d=1.0;
-			else d=-1.0;
+			//if(player==this.player)
+				d=1.0;
+			//else d=-1.0;
 			return d*evaluateState(b);
 		}
 		int nextDecay;
@@ -142,28 +153,145 @@ public class ArtificialPlayer{
 					forwardSpot = 7-i;
 				*/
 				if(b.getPieceAt(i,j)==OUR_PIECE){
-					if(analyzeGrid[i][j] == 1) tout-=0.5;
-					else if(analyzeGrid[i][j] == 2) tout+= 10;
-					tout+=OUR_POS_BIAS;
+					//if(pawnGrid[i][j] == 1) tout-=0.5;
+					//else if(pawnGrid[i][j] == 2) tout+= 10;
+					tout += OUR_POS_BIAS * pawnGrid[i][j];// * multiplier(b, i, j);
 				}
 				else if(b.getPieceAt(i,j)==OUR_KING){
-					if(analyzeGrid[i][j] == 1) tout-=0.5;
-					else if(analyzeGrid[i][j] == 2) tout+= 10;
-					tout+=OUR_POS_BIAS * OUR_KING_BIAS;
+					//if(pawnGrid[i][j] == 1) tout-=0.5;
+					//else if(pawnGrid[i][j] == 2) tout+= 10;
+					tout += OUR_KING_BIAS * kingGrid[i][j];// * multiplier(b, i, j);
 				}
 				else if(b.getPieceAt(i,j)==THEIR_PIECE){
-					if(analyzeGrid[i][j] == 1) tout+=0.5;
-					else if(analyzeGrid[i][j] == 2) tout-= 10;
-					tout+=THEIR_POS_BIAS;
+					//if(pawnGrid[i][j] == 1) tout+=0.5;
+					//else if(pawnGrid[i][j] == 2) tout-= 10;
+					tout += THEIR_POS_BIAS * pawnGrid[i][j];// * multiplier(b, i, j);
 				}
 				else if(b.getPieceAt(i,j)==THEIR_KING){
-					if(analyzeGrid[i][j] == 1) tout+=0.5;
-					else if(analyzeGrid[i][j] == 2) tout-= 10;
-					tout+=THEIR_POS_BIAS * THEIR_KING_BIAS;
+					//if(pawnGrid[i][j] == 1) tout+=0.5;
+					//else if(pawnGrid[i][j] == 2) tout-= 10;
+					tout += THEIR_KING_BIAS * kingGrid[i][j];// * multiplier(b, i, j);
 				}
 			}
 		}
-		return tout + Math.random();
+		return tout;// + Math.random();
+	}
+	
+	// Get a value based on relative piece placement
+	private double multiplier(Board b, int i, int j) {
+		
+		int piece = b.getPieceAt(i, j);
+		
+		// Test for adjacent enemy pieces or enemy pieces that are 2 spaces away
+		if (piece == OUR_PIECE || piece == OUR_KING) {
+			try {
+				// test up/left
+				int test = b.getPieceAt(i-1, j-1);
+				if (test == THEIR_PIECE || test == THEIR_KING) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test up/right
+				int test = b.getPieceAt(i-1, j+1);
+				if (test == THEIR_PIECE || test == THEIR_KING) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test down/right
+				int test = b.getPieceAt(i-1, j+1);
+				if (test == THEIR_KING) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test down/left
+				int test = b.getPieceAt(i+1, j+1);
+				if (test == THEIR_KING) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			}
+			
+			try {
+				// test aggressive positions
+				// test up2/left2
+				int test = b.getPieceAt(i-2, j-2);
+				if (test == THEIR_PIECE || test == THEIR_KING) {
+					return 2;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test up2/center
+				int test = b.getPieceAt(i-2, j);
+				if (test == THEIR_PIECE || test == THEIR_KING) {
+					return 2;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test up2/right2
+				int test = b.getPieceAt(i-2, j+2);
+				if (test == THEIR_PIECE || test == THEIR_KING) {
+					return 2;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			}
+		} else {
+			try {
+				// test up/left
+				int test = b.getPieceAt(i-1, j-1);
+				if (test == OUR_KING) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test up/right
+				int test = b.getPieceAt(i-1, j+1);
+				if (test == OUR_KING) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test down/right
+				int test = b.getPieceAt(i-1, j+1);
+				if (test == OUR_KING || test == OUR_PIECE) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test down/left
+				int test = b.getPieceAt(i+1, j+1);
+				if (test == OUR_KING || test == OUR_PIECE) {
+					return 0.5;
+				}
+			} catch (IndexOutOfBoundsException e) {} 
+				
+			try{
+				// test aggressive positions
+				// test down2/left2
+				int test = b.getPieceAt(i+2, j-2);
+				if (test == OUR_PIECE || test == OUR_KING) {
+					return 2;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test down2/center
+				int test = b.getPieceAt(i+2, j);
+				if (test == OUR_PIECE || test == OUR_KING) {
+					return 2;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			} try{
+				// test down2/right2
+				int test = b.getPieceAt(i+2, j+2);
+				if (test == OUR_PIECE || test == OUR_KING) {
+					return 2;
+				}
+			} catch (IndexOutOfBoundsException e) {
+			}
+		}
+		return 1;
 	}
 	
 }
