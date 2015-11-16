@@ -21,7 +21,7 @@ public class Main {
 	
 	
 	public static boolean gameWon = false;
-	public static int currentPlayer = RED;
+	public static int currentPlayer = BLACK;
 	public static ArtificialPlayer redAI   = null;
 	public static ArtificialPlayer blackAI = null;
 	

@@ -69,7 +69,7 @@ public class ArtificialPlayer{
 		return b.getLegalMovesFor(player)[0];
 	}
 	
-	public CheckersMove getMove(Board b){ // TODO fix this shit to make sure it's actually working
+	public CheckersMove getBorkedMove(Board b){ // TODO fix this shit to make sure it's actually working
 		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(player);
 		if(potentialMoves == null || potentialMoves.length == 0) return null;
 		Board tBoard;
@@ -85,7 +85,40 @@ public class ArtificialPlayer{
 		}
 		return potentialMoves[bestBoard];
 	}
+	/*
+	public CheckersMove getNMove(Board b){
+		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(player);
+		if(potentialMoves == null || potentialMoves.length == 0) return null;
+		Board t;
+		int best;
+		double bestV = -1000000000.0, tVal = 0.0;
+		for(int i = 0; i < potentialMoves.length; i++){
+			tBoard = new Board(b, potentialMoves[i]);
+			tVal = getValue(tBoard,decay);
+			if(tVal>bestV){
+				bestV = tVal;
+				best = i;
+			}
+		}
+		return potentialMoves[best];
+	}
 	
+	private double getValue(tBoard, decay){
+		double d;
+		if(decay % 2 == 0) // Minimax crude implementation
+			d=1.0;
+		else
+			d=-1.0;
+		
+		if(decay==0)
+			return d * evaluateState(b);
+		
+		board tBoard;
+		double bestVal = -10000000.0;
+		int bestBoard;
+		
+	}
+	*/
 	private double optimize(Board b, int player, int decay){ // TODO fix this shit to make sure it's actually working
 		double d;
 		int nextPlayer;
@@ -122,7 +155,7 @@ public class ArtificialPlayer{
 		return d * bestVal;
 	}
 	
-	public CheckersMove getFOMove(Board b){
+	public CheckersMove getMove(Board b){ // GetFirstOrderMove
 		CheckersMove moveCandidates[] = b.getLegalMovesFor(player);
 		Board tempBoards[] = new Board[moveCandidates.length];
 		double scores[] = new double[moveCandidates.length];
@@ -152,25 +185,35 @@ public class ArtificialPlayer{
 				else
 					forwardSpot = 7-i;
 				*/
-				if(b.getPieceAt(i,j)==OUR_PIECE){
+				int relI = i;
+				int relJ = j;
+				if(player==Board.BLACK){
+					relI = 7-i;
+					relJ = 7-j;
+				}
+				if(b.getPieceAt(relI,relJ)==OUR_PIECE){
 					//if(pawnGrid[i][j] == 1) tout-=0.5;
 					//else if(pawnGrid[i][j] == 2) tout+= 10;
-					tout += OUR_POS_BIAS * pawnGrid[i][j];// * multiplier(b, i, j);
+					//tout += OUR_POS_BIAS * pawnGrid[i][j];// * multiplier(b, i, j);
+					tout += OUR_POS_BIAS * pawnGrid[relI][relJ];
 				}
 				else if(b.getPieceAt(i,j)==OUR_KING){
 					//if(pawnGrid[i][j] == 1) tout-=0.5;
 					//else if(pawnGrid[i][j] == 2) tout+= 10;
-					tout += OUR_KING_BIAS * kingGrid[i][j];// * multiplier(b, i, j);
+					//tout += OUR_KING_BIAS * kingGrid[i][j];// * multiplier(b, i, j);
+					tout += OUR_KING_BIAS * kingGrid[relI][relJ];
 				}
 				else if(b.getPieceAt(i,j)==THEIR_PIECE){
 					//if(pawnGrid[i][j] == 1) tout+=0.5;
 					//else if(pawnGrid[i][j] == 2) tout-= 10;
-					tout += THEIR_POS_BIAS * pawnGrid[i][j];// * multiplier(b, i, j);
+					//tout += THEIR_POS_BIAS * pawnGrid[i][j];// * multiplier(b, i, j);
+					tout += THEIR_POS_BIAS * pawnGrid[relI][relJ];
 				}
 				else if(b.getPieceAt(i,j)==THEIR_KING){
 					//if(pawnGrid[i][j] == 1) tout+=0.5;
 					//else if(pawnGrid[i][j] == 2) tout-= 10;
-					tout += THEIR_KING_BIAS * kingGrid[i][j];// * multiplier(b, i, j);
+					//tout += THEIR_KING_BIAS * kingGrid[i][j];// * multiplier(b, i, j);
+					tout += THEIR_KING_BIAS * kingGrid[relI][relJ];
 				}
 			}
 		}
