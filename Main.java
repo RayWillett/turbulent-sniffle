@@ -77,15 +77,6 @@ public class Main {
 	}
 	
 	/**
-	 * Spit out whether or not they have an actual, you know, move left
-	 */
-	private static boolean moveAndSwitchIfNeeded(CheckersMove m){
-		boolean thisWas = m.isJump();
-		CheckerRules.makeMove(m);
-		return false;
-	}
-	
-	/**
 	 * Get a move from the red team and apply it to the board if it is valid
 	 */
 	private static void redMove() {
@@ -101,14 +92,8 @@ public class Main {
 		
 		// Red AI move
 		if (redAI!=null) {
-			// Wait 0.1 sec
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			// Make a move
-			m = redAI.getMove(new Board(state));
+			m = redAI.getNMove(new Board(state));
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("RED moved: " + m.toString());
@@ -152,14 +137,8 @@ public class Main {
 		CheckersMove m = null;
 		// Black AI move
 		if (blackAI!=null) {
-			// Wait 0.1 sec
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			// Make a move
-			m = blackAI.getMove(new Board(state));
+			m = blackAI.getNMove___(new Board(state));
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("BLACK moved: " + m.toString());

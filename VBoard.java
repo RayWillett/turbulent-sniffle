@@ -21,6 +21,11 @@ import javax.swing.text.DefaultCaret;
  */
 public class VBoard extends JFrame {
 
+	/**
+	 * Eclipse told me to do it
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int 
 	    EMPTY = 0,
 	    RED = 1,
@@ -108,6 +113,11 @@ public class VBoard extends JFrame {
 	 */
 	public void update() {
 		content.repaint();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -125,6 +135,11 @@ public class VBoard extends JFrame {
 	private class Canvas extends JPanel{
 
 		
+		/**
+		 * Eclipse told me to do it
+		 */
+		private static final long serialVersionUID = 1L;
+
 		/**
 		 * Constructor for Canvas
 		 */
