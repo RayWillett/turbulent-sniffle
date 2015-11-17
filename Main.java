@@ -92,8 +92,21 @@ public class Main {
 		
 		// Red AI move
 		if (redAI!=null) {
+			
+			
+			
+			
+			
 			// Make a move
-			m = redAI.getNMove(new Board(state));
+			m = redAI.getNMove___(new Board(state));
+			//m = redAI.getNMove(new Board(state));
+			
+			
+			
+			
+			
+			
+			
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("RED moved: " + m.toString());
@@ -134,11 +147,23 @@ public class Main {
 			gameWon = true;
 			return;
 		}
+		
+		
 		CheckersMove m = null;
 		// Black AI move
 		if (blackAI!=null) {
+			
+			
+			
+			
 			// Make a move
-			m = blackAI.getNMove___(new Board(state));
+			//m = blackAI.getNMove___(new Board(state));
+			m = blackAI.getNMove(new Board(state));
+			
+			
+			
+			
+			
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("BLACK moved: " + m.toString());

@@ -4,11 +4,11 @@
 public class ArtificialPlayer{
 	int player;
 	
-	static final double
+	static double
 		OUR_POS_BIAS = 1.0, // piece survival bias, seemingly irrelevant
 		THEIR_POS_BIAS = -1.0,
-		OUR_KING_BIAS = 1.0,
-		THEIR_KING_BIAS = -1.0;
+		OUR_KING_BIAS = 5.0,
+		THEIR_KING_BIAS = -5.0;
 	
 	// 
 	/*
@@ -81,7 +81,7 @@ public class ArtificialPlayer{
 	 * @return
 	 */
 	public CheckersMove getNMove(Board b) {
-		return getNMove(b, this.player, 6);
+		return getNMove___(b, this.player, 5);
 	}
 	
 	/**
@@ -243,7 +243,7 @@ public class ArtificialPlayer{
 				// test up/left
 				int test = b.getPieceAt(i-1, j-1);
 				if (test == Board.BLACK || test == Board.BLACK_KING) {
-					if (player == Board.RED)
+					if (player == Board.BLACK)
 						return 0.5;
 					else
 						return 2;
@@ -253,7 +253,7 @@ public class ArtificialPlayer{
 				// test up/right
 				int test = b.getPieceAt(i-1, j+1);
 				if (test == Board.BLACK || test == Board.BLACK_KING) {
-					if (player == Board.RED)
+					if (player == Board.BLACK)
 						return 0.5;
 					else
 						return 2;
@@ -263,7 +263,7 @@ public class ArtificialPlayer{
 				// test down/right
 				int test = b.getPieceAt(i-1, j+1);
 				if (test == Board.BLACK_KING) {
-					if (player == Board.RED)
+					if (player == Board.BLACK)
 						return 0.5;
 					else
 						return 2;
@@ -273,7 +273,7 @@ public class ArtificialPlayer{
 				// test down/left
 				int test = b.getPieceAt(i+1, j+1);
 				if (test == Board.BLACK_KING) {
-					if (player == Board.RED)
+					if (player == Board.BLACK)
 						return 0.5;
 					else
 						return 2;
@@ -285,7 +285,7 @@ public class ArtificialPlayer{
 				// test up/left
 				int test = b.getPieceAt(i-1, j-1);
 				if (test == Board.RED_KING) {
-					if (player == Board.BLACK)
+					if (player == Board.RED)
 						return 0.5;
 					else
 						return 2;
@@ -295,7 +295,7 @@ public class ArtificialPlayer{
 				// test up/right
 				int test = b.getPieceAt(i-1, j+1);
 				if (test == Board.RED_KING) {
-					if (player == Board.BLACK)
+					if (player == Board.RED)
 						return 0.5;
 					else
 						return 2;
@@ -305,7 +305,7 @@ public class ArtificialPlayer{
 				// test down/right
 				int test = b.getPieceAt(i-1, j+1);
 				if (test == Board.RED_KING || test == Board.RED) {
-					if (player == Board.BLACK)
+					if (player == Board.RED)
 						return 0.5;
 					else
 						return 2;
@@ -315,7 +315,7 @@ public class ArtificialPlayer{
 				// test down/left
 				int test = b.getPieceAt(i+1, j+1);
 				if (test == Board.RED_KING || test == Board.RED) {
-					if (player == Board.BLACK)
+					if (player == Board.RED)
 						return 0.5;
 					else
 						return 2;
@@ -331,18 +331,18 @@ public class ArtificialPlayer{
 	 * THE FOLLOWING METHODS ARE FOR TESTING PURPOSES: MODIFY THEM AND PIT THEM AGAINST
 	 * THE OTHER GETNMOVE METHOD
 	 * 
-	 * Current modification: No multiplier
+	 * Current modification: extra recursion
 	 * 
 	 * Results:
-	 * 		When on red team: 	Win
-	 * 		When on black team: Win
+	 * 		When on red team: 	w
+	 * 		When on black team: w
 	 * 
 	 **********************************************************************************/
 	
 	
 	
 	public CheckersMove getNMove___(Board b) {
-		return getNMove___(b, this.player, 6);
+		return getNMove___(b, this.player, 7);
 	}
 	
 	private CheckersMove getNMove___(Board b, int player, int rec){
