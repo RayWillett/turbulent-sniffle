@@ -93,4 +93,115 @@ public class CodeGraveyard {
 //		}
 //		return d * bestVal;
 //	}
+	
+
+	
+	
+	// ArtificialPlayer.java  getNMove
+	
+//	private CheckersMove getNMove(Board b, int player, int rec){
+//		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(b, player);
+//		if(potentialMoves == null || potentialMoves.length == 0) return null;
+//		
+//		CheckersMove bestMove = null;
+//		
+//		// Base case
+//		if (rec == 0) {
+//			// If we are finding the best move for this player, find best move
+//			if (player == this.player) {
+//				double bestVal = Double.MIN_VALUE;
+//				for (CheckersMove move : potentialMoves) {
+//					Board test = new Board(b, move);
+//					double val = evaluateState(test, player);
+//					
+//					if (val > bestVal) {
+//						bestVal = val;
+//						bestMove = move;
+//					} 
+//				}
+//			// If we are finding best move for enemy player, find worst move
+//			} else {
+//				double bestVal = Double.MAX_VALUE;
+//				for (CheckersMove move : potentialMoves) {
+//					Board test = new Board(b, move);
+//					double val = evaluateState(test, player);
+//					
+//					if (val < bestVal) {
+//						bestVal = val;
+//						bestMove = move;
+//					} 
+//				}	
+//			}
+//			
+//			return bestMove;
+//		} 
+//		
+//		// Middle case, get boards based on best moves from each state in potential moves
+//		//
+//		// If we are finding the best move for this player, find best move
+//		if (player == this.player) {
+//			double bestVal = evaluateState(new Board(b, bestMove), player);
+//			for (CheckersMove move : potentialMoves) {
+//				// If the move is not a jump, switch players
+//				if (!move.isJump()) player = otherPlayer(player);
+//				
+//				// Get the next state (may be the enemy's turn)
+//				Board current = new Board(b, move);
+//				CheckersMove nextMove = getNMove(current, player, rec - 1);
+//				
+//				if (nextMove == null){
+//					// If there are no more moves, and it's our turn: reported for hax
+//					if (player == this.player) {
+//						continue;
+//					// If there are no more moves, and it's the enemy's turn: gg ez
+//					} else {
+//						return move;
+//					}
+//				}
+//				// else 
+//				Board test = new Board(current, nextMove);
+//				double val = evaluateState(test, player);
+//				
+//				// Find the best one
+//				if (val > bestVal) {
+//					bestVal = val;
+//					bestMove = move;
+//				} 
+//			}
+//		// If we are finding best move for enemy player, find worst move
+//		} else {
+//			double bestVal = evaluateState(new Board(b, bestMove), player);
+//			for (CheckersMove move : potentialMoves) {
+//				// If the move is not a jump, switch players
+//				if (!move.isJump()) player = otherPlayer(player);
+//				
+//				// Get the next state (may be the enemy's turn)
+//				Board current = new Board(b, move);
+//				CheckersMove nextMove = getNMove(current, player, rec - 1);
+//	
+//				if (nextMove == null){
+//					// If there are no more moves, and it's our turn: gg ez
+//					if (player != this.player) {
+//						continue;
+//					// If there are no more moves, and it's the enemy's turn: reported for hax
+//					} else {
+//						return move;
+//					}
+//				}
+//				// else 
+//				Board test = new Board(current, nextMove);
+//				double val = evaluateState(test, player);
+//				
+//				
+//				// Given that this is the enemy's turn, find the worst state
+//				if (val < bestVal) {
+//					bestVal = val;
+//					bestMove = move;
+//				} 
+//			}	
+//		}
+//		return bestMove;
+//	}
+	
+	
 }

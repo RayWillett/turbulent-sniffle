@@ -15,7 +15,8 @@ public class Board {
 		BLACK_KING = 4;
 
 	int[][] board;
-
+	public int currentPlayer;
+	
 	Board() {
 		board = new int[8][8];
 		initGame();

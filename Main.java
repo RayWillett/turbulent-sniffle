@@ -98,8 +98,8 @@ public class Main {
 			
 			
 			// Make a move
-			m = redAI.getNMove___(new Board(state));
-			//m = redAI.getNMove(new Board(state));
+			//m = redAI.getNMove___(new Board(state));
+			m = redAI.getNMove(new Board(state));
 			
 			
 			
@@ -123,6 +123,7 @@ public class Main {
 					redMove();
 					return;
 				}
+				
 			} catch (Exception e) {
 				vboard.println("Bad input.");
 				redMove();
@@ -157,8 +158,8 @@ public class Main {
 			
 			
 			// Make a move
-			//m = blackAI.getNMove___(new Board(state));
 			m = blackAI.getNMove(new Board(state));
+			//m = blackAI.getNMove(new Board(state));
 			
 			
 			
