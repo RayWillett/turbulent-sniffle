@@ -99,20 +99,20 @@ public class CodeGraveyard {
 	
 	// ArtificialPlayer.java  getNMove
 	
-//	private CheckersMove getNMove(Board b, int player, int rec){
+//	public CheckersMove getNMove___(Board b, int player, int rec){
 //		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(b, player);
 //		if(potentialMoves == null || potentialMoves.length == 0) return null;
 //		
-//		CheckersMove bestMove = null;
+//		CheckersMove bestMove = potentialMoves[0];
 //		
 //		// Base case
 //		if (rec == 0) {
 //			// If we are finding the best move for this player, find best move
 //			if (player == this.player) {
-//				double bestVal = Double.MIN_VALUE;
+//				double bestVal = evaluateState(new Board(b, bestMove));
 //				for (CheckersMove move : potentialMoves) {
 //					Board test = new Board(b, move);
-//					double val = evaluateState(test, player);
+//					double val = evaluateState(test);
 //					
 //					if (val > bestVal) {
 //						bestVal = val;
@@ -121,10 +121,10 @@ public class CodeGraveyard {
 //				}
 //			// If we are finding best move for enemy player, find worst move
 //			} else {
-//				double bestVal = Double.MAX_VALUE;
+//				double bestVal = evaluateState(new Board(b, bestMove));
 //				for (CheckersMove move : potentialMoves) {
 //					Board test = new Board(b, move);
-//					double val = evaluateState(test, player);
+//					double val = evaluateState(test);
 //					
 //					if (val < bestVal) {
 //						bestVal = val;
@@ -140,7 +140,7 @@ public class CodeGraveyard {
 //		//
 //		// If we are finding the best move for this player, find best move
 //		if (player == this.player) {
-//			double bestVal = evaluateState(new Board(b, bestMove), player);
+//			double bestVal = evaluateState(new Board(b, bestMove));
 //			for (CheckersMove move : potentialMoves) {
 //				// If the move is not a jump, switch players
 //				if (!move.isJump()) player = otherPlayer(player);
@@ -160,7 +160,7 @@ public class CodeGraveyard {
 //				}
 //				// else 
 //				Board test = new Board(current, nextMove);
-//				double val = evaluateState(test, player);
+//				double val = evaluateState(test);
 //				
 //				// Find the best one
 //				if (val > bestVal) {
@@ -170,7 +170,7 @@ public class CodeGraveyard {
 //			}
 //		// If we are finding best move for enemy player, find worst move
 //		} else {
-//			double bestVal = evaluateState(new Board(b, bestMove), player);
+//			double bestVal = evaluateState(new Board(b, bestMove));
 //			for (CheckersMove move : potentialMoves) {
 //				// If the move is not a jump, switch players
 //				if (!move.isJump()) player = otherPlayer(player);
@@ -190,7 +190,7 @@ public class CodeGraveyard {
 //				}
 //				// else 
 //				Board test = new Board(current, nextMove);
-//				double val = evaluateState(test, player);
+//				double val = evaluateState(test);
 //				
 //				
 //				// Given that this is the enemy's turn, find the worst state

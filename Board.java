@@ -36,6 +36,7 @@ public class Board {
 	} // end copy constructor
       
 	Board(Board r, CheckersMove move){
+		if (!move.isJump()) currentPlayer = otherPlayer(currentPlayer);
 		board = new int[8][8];
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j<8;j++){
@@ -45,6 +46,19 @@ public class Board {
 		this.makeMove(move);
 	} // end move constructor
 
+
+	/**
+	 * if black -> red
+	 * if red   -> black
+	 * @param player
+	 * @return
+	 */
+	private int otherPlayer(int player){
+		if(player==Board.RED)
+			return Board.BLACK;
+		return Board.RED;
+	}
+	
 	void initGame() {
 		for (int row = 0; row < 8; row++) {
 			for (int col = 0; col < 8; col++) {

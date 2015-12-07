@@ -95,6 +95,7 @@ public class ArtificialPlayer{
 	private CheckersMove getNMove(Board b, int player, int rec){
 		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(b, player);
 		if(potentialMoves == null || potentialMoves.length == 0) return null;
+		b.currentPlayer = this.player;
 		
 		double bestVal = -10000000;
 		CheckersMove bestMove = null;
@@ -105,8 +106,7 @@ public class ArtificialPlayer{
 			Board test = new Board(b, move);
 			
 			Board finalState = findLikelyBoardNDeep(test, nextPlayer, rec);
-			System.out.println(finalState);
-			double val = evaluateState(finalState, player);
+			double val = evaluateState(finalState);
 			
 			if (val > bestVal) {
 				bestVal = val;
@@ -115,7 +115,6 @@ public class ArtificialPlayer{
 			
 		}
 		
-		System.out.println("return best move");
 		return bestMove;
 	}
 	
@@ -143,7 +142,7 @@ public class ArtificialPlayer{
 				double bestVal = -10000000;
 				for (CheckersMove move : potentialMoves) {
 					Board test = new Board(b, move);
-					double val = evaluateState(test, player);
+					double val = evaluateState(test);
 					
 					if (val > bestVal) {
 						bestVal = val;
@@ -155,7 +154,7 @@ public class ArtificialPlayer{
 				double bestVal = 10000000;
 				for (CheckersMove move : potentialMoves) {
 					Board test = new Board(b, move);
-					double val = evaluateState(test, player);
+					double val = evaluateState(test);
 					
 					if (val < bestVal) {
 						bestVal = val;
@@ -174,7 +173,7 @@ public class ArtificialPlayer{
 				if (!move.isJump()) nextPlayer = otherPlayer(player);
 				Board next = new Board(b, move);
 				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
-				double val = evaluateState(end, player);
+				double val = evaluateState(end);
 				
 				if (val > bestVal) {
 					bestVal = val;
@@ -188,7 +187,7 @@ public class ArtificialPlayer{
 				if (!move.isJump()) nextPlayer = otherPlayer(player);
 				Board next = new Board(b, move);
 				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
-				double val = evaluateState(end, player);
+				double val = evaluateState(end);
 				
 				if (val < bestVal) {
 					bestVal = val;
@@ -209,7 +208,7 @@ public class ArtificialPlayer{
 	 * @param player
 	 * @return
 	 */
-	private double evaluateState(Board b, int player){
+	private double evaluateState(Board b){
 		boolean weWon = true;
 		boolean theyWon = true;
 		double tout = 0.0;
@@ -252,6 +251,170 @@ public class ArtificialPlayer{
 		return tout;// + Math.random();
 	}
 
+
+	/**********************************************************************************
+	 * 
+	 * THE FOLLOWING METHODS ARE FOR TESTING PURPOSES: MODIFY THEM AND PIT THEM AGAINST
+	 * THE OTHER GETNMOVE METHOD
+	 * 
+	 * Current modification: multiplier
+	 * 
+	 * Results:
+	 * 		When on red team: 	lose
+	 * 		When on black team: 
+	 * 
+	 **********************************************************************************/
+	
+
+	public CheckersMove getNMove___(Board b) {
+		return getNMove___(b, this.player, 6);
+	}
+	
+	public CheckersMove getNMove___(Board b, int player, int rec){
+
+		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(b, player);
+		if(potentialMoves == null || potentialMoves.length == 0) return null;
+		b.currentPlayer = this.player;
+		
+		double bestVal = -10000000;
+		CheckersMove bestMove = null;
+		
+		for (CheckersMove move : potentialMoves) {
+			int nextPlayer = player;
+			if (!move.isJump()) nextPlayer = otherPlayer(player);
+			Board test = new Board(b, move);
+			
+			Board finalState = findLikelyBoardNDeep___(test, nextPlayer, rec);
+			double val = evaluateState___(finalState);
+			
+			if (val > bestVal) {
+				bestVal = val;
+				bestMove = move;
+			}
+			
+		}
+		
+		return bestMove;
+	}
+	
+
+	public Board findLikelyBoardNDeep___(Board b, int player, int n) {
+		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(b, player);
+		if(potentialMoves == null || potentialMoves.length == 0) return b;
+
+		
+		Board bestBoard = null;
+		
+		// Base case
+		if (n == 0) {
+			// If we are finding the best move for this player, find best move
+			if (player == this.player) {
+				double bestVal = -10000000;
+				for (CheckersMove move : potentialMoves) {
+					Board test = new Board(b, move);
+					double val = evaluateState___(test);
+					
+					if (val > bestVal) {
+						bestVal = val;
+						bestBoard = test;
+					} 
+				}
+			// If we are finding best move for enemy player, find worst move
+			} else {
+				double bestVal = 10000000;
+				for (CheckersMove move : potentialMoves) {
+					Board test = new Board(b, move);
+					double val = evaluateState___(test);
+					
+					if (val < bestVal) {
+						bestVal = val;
+						bestBoard = test;
+					} 
+				}	
+			}
+			return bestBoard;
+		} 
+		
+		// Middle case
+		if (player == this.player) {
+			double bestVal = -10000000;
+			for (CheckersMove move : potentialMoves) {
+				int nextPlayer = player;
+				if (!move.isJump()) nextPlayer = otherPlayer(player);
+				Board next = new Board(b, move);
+				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
+				double val = evaluateState___(end);
+				
+				if (val > bestVal) {
+					bestVal = val;
+					bestBoard = end;
+				} 
+			}
+		} else {
+			double bestVal = 10000000;
+			for (CheckersMove move : potentialMoves) {
+				int nextPlayer = player;
+				if (!move.isJump()) nextPlayer = otherPlayer(player);
+				Board next = new Board(b, move);
+				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
+				double val = evaluateState___(end);
+				
+				if (val < bestVal) {
+					bestVal = val;
+					bestBoard = end;
+				} 
+			}
+		}
+		
+		return bestBoard;
+		
+	}
+	
+	private double evaluateState___(Board b){
+		boolean weWon = true;
+		boolean theyWon = true;
+		double tout = 0.0;
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				int relI = i;
+				int relJ = j;
+				int theirI = 7-i;
+				int theirJ = 7-j;
+				
+				if(this.player==Board.BLACK){
+					relI = 7-i;
+					relJ = 7-j;
+					theirI = i;
+					theirJ = j;
+				}
+				
+				if(b.getPieceAt(i,j)==OUR_PIECE){
+					theyWon = false;
+					tout += OUR_POS_BIAS * pawnGrid[relI][relJ] * multiplier(b, i, j);
+				}
+				else if(b.getPieceAt(i,j)==OUR_KING){
+					theyWon = false;
+					tout += OUR_KING_BIAS * kingGrid[relI][relJ] * multiplier(b, i, j);
+				}
+				else if(b.getPieceAt(i,j)==THEIR_PIECE){
+					weWon = false;
+					tout += THEIR_POS_BIAS * pawnGrid[theirI][theirJ];// * multiplier(b, i, j);
+				}
+				else if(b.getPieceAt(i,j)==THEIR_KING){
+					weWon = false;
+					tout += THEIR_KING_BIAS * kingGrid[theirI][theirJ];// * multiplier(b, i, j);
+				}
+			}
+		}
+		
+		if (weWon) tout += END_BIAS;
+		if (theyWon) tout -= END_BIAS;
+		
+		return tout;// + Math.random();
+	}
+	
+
+
 	/**
 	 * This actually really sucks
 	 * 
@@ -261,8 +424,9 @@ public class ArtificialPlayer{
 	 * @param j
 	 * @return
 	 */
-	private double multiplier(Board b, int player, int i, int j) {
+	private double multiplier(Board b, int i, int j) {
 		
+		//int player = b.currentPlayer;
 		int piece = b.getPieceAt(i, j);
 		
 		// Test for adjacent enemy pieces or enemy pieces that are 2 spaces away
@@ -352,129 +516,4 @@ public class ArtificialPlayer{
 		}
 		return 1;
 	}
-
-
-	/**********************************************************************************
-	 * 
-	 * THE FOLLOWING METHODS ARE FOR TESTING PURPOSES: MODIFY THEM AND PIT THEM AGAINST
-	 * THE OTHER GETNMOVE METHOD
-	 * 
-	 * Current modification: old end-game detection
-	 * 
-	 * Results:
-	 * 		When on red team: 	lose
-	 * 		When on black team: lose
-	 * 
-	 **********************************************************************************/
-	
-
-	public CheckersMove getNMove___(Board b) {
-		return getNMove___(b, this.player, 6);
-	}
-	
-	public CheckersMove getNMove___(Board b, int player, int rec){
-		CheckersMove potentialMoves[] = CheckerRules.getLegalMovesFor(b, player);
-		if(potentialMoves == null || potentialMoves.length == 0) return null;
-		
-		CheckersMove bestMove = potentialMoves[0];
-		
-		// Base case
-		if (rec == 0) {
-			// If we are finding the best move for this player, find best move
-			if (player == this.player) {
-				double bestVal = evaluateState(new Board(b, bestMove), player);
-				for (CheckersMove move : potentialMoves) {
-					Board test = new Board(b, move);
-					double val = evaluateState(test, player);
-					
-					if (val > bestVal) {
-						bestVal = val;
-						bestMove = move;
-					} 
-				}
-			// If we are finding best move for enemy player, find worst move
-			} else {
-				double bestVal = evaluateState(new Board(b, bestMove), player);
-				for (CheckersMove move : potentialMoves) {
-					Board test = new Board(b, move);
-					double val = evaluateState(test, player);
-					
-					if (val < bestVal) {
-						bestVal = val;
-						bestMove = move;
-					} 
-				}	
-			}
-			
-			return bestMove;
-		} 
-		
-		// Middle case, get boards based on best moves from each state in potential moves
-		//
-		// If we are finding the best move for this player, find best move
-		if (player == this.player) {
-			double bestVal = evaluateState(new Board(b, bestMove), player);
-			for (CheckersMove move : potentialMoves) {
-				// If the move is not a jump, switch players
-				if (!move.isJump()) player = otherPlayer(player);
-				
-				// Get the next state (may be the enemy's turn)
-				Board current = new Board(b, move);
-				CheckersMove nextMove = getNMove(current, player, rec - 1);
-				
-				if (nextMove == null){
-					// If there are no more moves, and it's our turn: reported for hax
-					if (player == this.player) {
-						continue;
-					// If there are no more moves, and it's the enemy's turn: gg ez
-					} else {
-						return move;
-					}
-				}
-				// else 
-				Board test = new Board(current, nextMove);
-				double val = evaluateState(test, player);
-				
-				// Find the best one
-				if (val > bestVal) {
-					bestVal = val;
-					bestMove = move;
-				} 
-			}
-		// If we are finding best move for enemy player, find worst move
-		} else {
-			double bestVal = evaluateState(new Board(b, bestMove), player);
-			for (CheckersMove move : potentialMoves) {
-				// If the move is not a jump, switch players
-				if (!move.isJump()) player = otherPlayer(player);
-				
-				// Get the next state (may be the enemy's turn)
-				Board current = new Board(b, move);
-				CheckersMove nextMove = getNMove(current, player, rec - 1);
-	
-				if (nextMove == null){
-					// If there are no more moves, and it's our turn: gg ez
-					if (player != this.player) {
-						continue;
-					// If there are no more moves, and it's the enemy's turn: reported for hax
-					} else {
-						return move;
-					}
-				}
-				// else 
-				Board test = new Board(current, nextMove);
-				double val = evaluateState(test, player);
-				
-				
-				// Given that this is the enemy's turn, find the worst state
-				if (val < bestVal) {
-					bestVal = val;
-					bestMove = move;
-				} 
-			}	
-		}
-		return bestMove;
-	}
-	
-	
 }

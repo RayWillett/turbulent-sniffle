@@ -307,7 +307,10 @@ public class VBoard extends JFrame {
 		            this.notifyAll();
 		        }
 			} else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-				tf.setText(_str+"\n");
+				if (_str != null)
+					tf.setText(_str+"\n");
+				else
+					tf.setText("");
 			}
 		}
 		@Override

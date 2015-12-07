@@ -98,7 +98,7 @@ public class Main {
 			
 			
 			// Make a move
-			//m = redAI.getNMove___(new Board(state));
+//			m = redAI.getNMove___(new Board(state));
 			m = redAI.getNMove(new Board(state));
 			
 			
@@ -157,9 +157,15 @@ public class Main {
 			
 			
 			
+			
+			
+			
 			// Make a move
 			m = blackAI.getNMove(new Board(state));
-			//m = blackAI.getNMove(new Board(state));
+//			m = blackAI.getNMove___(new Board(state));
+			
+			
+			
 			
 			
 			
