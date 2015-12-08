@@ -4,6 +4,10 @@ import java.util.Scanner;
  * 
  * @author rkalvait
  *
+ *team 7: tie, loss
+ *team 5: loss, loss+
+ *
+ *
  */
 public class Main {
 	
@@ -31,6 +35,7 @@ public class Main {
 	static Scanner keyboard;
 	
 	static boolean wasJump = false;
+	static CheckersMove lastMove = null;
 	
 	/**
 	 * 
@@ -51,7 +56,7 @@ public class Main {
 				redMove();
 			vboard.update();
 			
-			if(!wasJump) switchPlayers(); // Switch if it wasn't a jump just made
+			//if(!wasJump) switchPlayers(); // Switch if it wasn't a jump just made
 		}
 	}
 	
@@ -106,7 +111,7 @@ public class Main {
 			//////////////////\//////////////////////////////////////////////////////////////////////////
 			
 			
-			
+			lastMove = m;
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("RED moved: " + m.toString());
@@ -134,7 +139,11 @@ public class Main {
 			// Apply the move
 			CheckerRules.makeMove(m);
 		}
-		if(wasJump && CheckerRules.getLegalMovesFor(RED) != null && !CheckerRules.getLegalMovesFor(RED)[0].isJump()) wasJump = false;
+		//if(wasJump && CheckerRules.getLegalJumpsFrom(RED, m.toCol, m.toRow) != null ) wasJump = false;
+
+		if (!wasJump) switchPlayers();
+		else if (CheckerRules.getLegalJumpsFrom(RED, m.toRow, m.toCol) == null) switchPlayers();
+		
 	}
 
 	/**
@@ -171,7 +180,7 @@ public class Main {
 			//////////////////////////////////////////////////
 			
 			
-			
+			lastMove = m;
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("BLACK moved: " + m.toString());
@@ -195,8 +204,12 @@ public class Main {
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			CheckerRules.makeMove(m);
-		}
-		if(wasJump && CheckerRules.getLegalMovesFor(BLACK) != null && !CheckerRules.getLegalMovesFor(BLACK)[0].isJump()) wasJump = false;
+		}		
+		//if(wasJump && CheckerRules.getLegalJumpsFrom(BLACK , m.toCol, m.toRow) != null) wasJump = false;
+
+		if (!wasJump) switchPlayers();
+		else if (CheckerRules.getLegalJumpsFrom(BLACK, m.toRow, m.toCol) == null) switchPlayers();
+		
 	}
 
 	/**
@@ -204,16 +217,27 @@ public class Main {
 	 */
 	private static void createGUI() {
 		// Initial standard checkers setup. temp[0] is never used
+//		int[] temp = {
+//				EMPTY,
+//				BLACK, BLACK, BLACK, BLACK, 
+//				BLACK, BLACK, BLACK, BLACK, 
+//				BLACK, BLACK, BLACK, BLACK, 
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//				RED, RED, RED, RED, 
+//				RED, RED, RED, RED, 
+//				RED, RED, RED, RED, 
+//		};
 		int[] temp = {
 				EMPTY,
-				BLACK, BLACK, BLACK, BLACK, 
-				BLACK, BLACK, BLACK, BLACK, 
-				BLACK, BLACK, BLACK, BLACK, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
-				RED, RED, RED, RED, 
-				RED, RED, RED, RED, 
-				RED, RED, RED, RED, 
+				EMPTY, EMPTY, EMPTY, EMPTY, 
+				BLACK, BLACK, BLACK, BLACK, 
+				EMPTY, EMPTY, EMPTY, EMPTY, 
+				BLACK, BLACK, BLACK, BLACK, 
+				RED_KING, RED_KING, RED_KING, RED_KING, 
+				EMPTY, EMPTY, EMPTY, EMPTY, 
 		};
 		state = CheckerRules.as2DArray(temp);
 		

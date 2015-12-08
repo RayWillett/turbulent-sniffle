@@ -257,10 +257,10 @@ public class ArtificialPlayer{
 	 * THE FOLLOWING METHODS ARE FOR TESTING PURPOSES: MODIFY THEM AND PIT THEM AGAINST
 	 * THE OTHER GETNMOVE METHOD
 	 * 
-	 * Current modification: multiplier
+	 * Current modification: player param in eval
 	 * 
 	 * Results:
-	 * 		When on red team: 	lose
+	 * 		When on red team: 	lost
 	 * 		When on black team: 
 	 * 
 	 **********************************************************************************/
@@ -285,7 +285,7 @@ public class ArtificialPlayer{
 			Board test = new Board(b, move);
 			
 			Board finalState = findLikelyBoardNDeep___(test, nextPlayer, rec);
-			double val = evaluateState___(finalState);
+			double val = evaluateState___(finalState, nextPlayer);
 			
 			if (val > bestVal) {
 				bestVal = val;
@@ -312,7 +312,7 @@ public class ArtificialPlayer{
 				double bestVal = -10000000;
 				for (CheckersMove move : potentialMoves) {
 					Board test = new Board(b, move);
-					double val = evaluateState___(test);
+					double val = evaluateState___(test, player);
 					
 					if (val > bestVal) {
 						bestVal = val;
@@ -324,7 +324,7 @@ public class ArtificialPlayer{
 				double bestVal = 10000000;
 				for (CheckersMove move : potentialMoves) {
 					Board test = new Board(b, move);
-					double val = evaluateState___(test);
+					double val = evaluateState___(test, player);
 					
 					if (val < bestVal) {
 						bestVal = val;
@@ -343,7 +343,7 @@ public class ArtificialPlayer{
 				if (!move.isJump()) nextPlayer = otherPlayer(player);
 				Board next = new Board(b, move);
 				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
-				double val = evaluateState___(end);
+				double val = evaluateState___(end, nextPlayer);
 				
 				if (val > bestVal) {
 					bestVal = val;
@@ -357,7 +357,7 @@ public class ArtificialPlayer{
 				if (!move.isJump()) nextPlayer = otherPlayer(player);
 				Board next = new Board(b, move);
 				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
-				double val = evaluateState___(end);
+				double val = evaluateState___(end, nextPlayer);
 				
 				if (val < bestVal) {
 					bestVal = val;
@@ -370,7 +370,7 @@ public class ArtificialPlayer{
 		
 	}
 	
-	private double evaluateState___(Board b){
+	private double evaluateState___(Board b, int player){
 		boolean weWon = true;
 		boolean theyWon = true;
 		double tout = 0.0;
