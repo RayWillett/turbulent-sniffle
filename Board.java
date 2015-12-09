@@ -39,8 +39,8 @@ public class Board {
 	} // end copy constructor
       
 	Board(Board r, CheckersMove move){
-		prev_player = currentPlayer;
-		if (!move.isJump()) currentPlayer = otherPlayer(currentPlayer);
+		prev_player = r.currentPlayer;
+		int prev_piece = r.board[move.fromRow][move.fromCol];
 		board = new int[8][8];
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j<8;j++){
@@ -51,6 +51,10 @@ public class Board {
 		if (move.isJump()) wasJump = true;
 		lastMove = move;
 		this.makeMove(move);
+		if (!move.isJump()) currentPlayer = otherPlayer(prev_player);
+		else if (prev_piece != board[move.toRow][move.toCol] || CheckerRules.getLegalJumpsFrom(this, currentPlayer, move.toRow, move.toCol) == null) 
+			currentPlayer = otherPlayer(prev_player);
+
 	} // end move constructor
 
 

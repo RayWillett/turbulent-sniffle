@@ -216,7 +216,7 @@ public class Main {
 
 		if (!wasJump) switchPlayers();
 		else if (prev_piece != state[m.toRow][m.toCol] || CheckerRules.getLegalJumpsFrom(BLACK, m.toRow, m.toCol) == null) switchPlayers();
-		
+		else wasJump = false;
 	}
 
 	/**
@@ -224,28 +224,28 @@ public class Main {
 	 */
 	private static void createGUI() {
 		// Initial standard checkers setup. temp[0] is never used
-//		int[] temp = {
-//				EMPTY,
-//				BLACK, BLACK, BLACK, BLACK, 
-//				BLACK, BLACK, BLACK, BLACK, 
-//				BLACK, BLACK, BLACK, BLACK, 
-//				EMPTY, EMPTY, EMPTY, EMPTY, 
-//				EMPTY, EMPTY, EMPTY, EMPTY, 
-//				RED, RED, RED, RED, 
-//				RED, RED, RED, RED, 
-//				RED, RED, RED, RED, 
-//		};
 		int[] temp = {
 				EMPTY,
+				BLACK, BLACK, BLACK, BLACK, 
+				BLACK, BLACK, BLACK, BLACK, 
+				BLACK, BLACK, BLACK, BLACK, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
-				EMPTY, EMPTY, EMPTY, EMPTY, 
-				BLACK_KING, BLACK_KING, BLACK_KING, BLACK_KING, 
-				RED_KING, RED, RED, RED, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 				RED, RED, RED, RED, 
-				EMPTY, EMPTY, EMPTY, EMPTY, 
-				EMPTY, EMPTY, EMPTY, EMPTY, 
+				RED, RED, RED, RED, 
+				RED, RED, RED, RED, 
 		};
+//		int[] temp = {
+//				EMPTY,
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//				BLACK_KING, BLACK_KING, BLACK_KING, BLACK_KING, 
+//				RED_KING, RED, RED, RED, 
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//				RED, RED, RED, RED, 
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//				EMPTY, EMPTY, EMPTY, EMPTY, 
+//		};
 		state = CheckerRules.as2DArray(temp);
 		
 		vboard = new VBoard("Checkers");

@@ -155,8 +155,8 @@ public class CheckerRules {
 		if (player != RED && player != BLACK)
 			return null;
 
-		if (b.lastMove != null && b.lastMove.isJump()) {
-//			System.out.println("DOUBLE JUMP HAPPENING");
+		if (b.lastMove != null && b.lastMove.isJump() && b.prev_player == b.currentPlayer) {
+			System.out.println(""+b.lastMove.toRow+" , " + b.lastMove.toCol);
 			return getLegalJumpsFrom(b, player, b.lastMove.toRow, b.lastMove.toCol);
 		}
 

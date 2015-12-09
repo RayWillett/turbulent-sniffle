@@ -83,7 +83,8 @@ public class ArtificialPlayer{
 	 */
 	public CheckersMove getNMove(Board b) {
 		b.lastMove = Main.lastMove;
-		return getNMove(b, this.player, 3);
+		b.currentPlayer = player;
+		return getNMove(b, this.player, 7);
 	}
 	
 	/**
