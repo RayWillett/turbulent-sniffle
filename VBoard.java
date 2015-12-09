@@ -174,6 +174,7 @@ public class VBoard extends JFrame {
 			g.setColor(Color.BLACK);
 			fill=false;
 			int num=0;
+			int sizeReduction = 5;
 			for (int i=0; i<8; i++) {
 				for (int j=0; j<8; j++) {
 					if (fill) {
@@ -181,19 +182,19 @@ public class VBoard extends JFrame {
 						switch (Main.state[i][j]) {
 						case RED_KING:
 							g.setColor(Color.RED);
-							g.fillOval(j*xscale, i*yscale, xscale, yscale);
+							g.fillOval(j*xscale+sizeReduction, i*yscale+sizeReduction, xscale-(sizeReduction*2), yscale-(sizeReduction*2));
 							g.setColor(new Color(128, 0, 0));
 							//g.fillOval(j*xscale+4, i*yscale+4, xscale-8, yscale-8);
 			                fillStar(g, 5, (int)((j+0.5)*xscale), (int)((i+0.5)*yscale), 
-			                		(Math.min(xscale, yscale)-11)/4, (Math.min(xscale, yscale)-5)/2, 0.0);
+			                		(Math.min(xscale, yscale)-11-sizeReduction)/4, (Math.min(xscale, yscale)-5-sizeReduction)/2, 0.0);
 							break;
 						case RED:
 							g.setColor(Color.RED);
-							g.fillOval(j*xscale, i*yscale, xscale, yscale);
+							g.fillOval(j*xscale+sizeReduction, i*yscale+sizeReduction, xscale-(sizeReduction*2), yscale-(sizeReduction*2));
 							break;
 						case BLACK_KING:
 							g.setColor(Color.BLACK);
-							g.fillOval(j*xscale, i*yscale, xscale, yscale);
+							g.fillOval(j*xscale+sizeReduction, i*yscale+sizeReduction, xscale-(sizeReduction*2), yscale-(sizeReduction*2));
 							g.setColor(Color.DARK_GRAY);
 							//g.fillOval(j*xscale+4, i*yscale+4, xscale-8, yscale-8);
 			                fillStar(g, 5, (int)((j+0.5)*xscale), (int)((i+0.5)*yscale), 
@@ -201,9 +202,13 @@ public class VBoard extends JFrame {
 							break;
 						case BLACK:
 							g.setColor(Color.BLACK);
-							g.fillOval(j*xscale, i*yscale, xscale, yscale);
+							g.fillOval(j*xscale+sizeReduction, i*yscale+sizeReduction, xscale-(sizeReduction*2), yscale-(sizeReduction*2));
 							break;
 						}
+//						int rectwidth = 15;
+//						int rectheight = 12;
+//						g.setColor(Color.WHITE);
+//						g.fillRect(j*xscale, (i+1)*yscale-rectheight, rectwidth, rectheight);
 						g.setColor(Color.BLACK);
 						g.drawString(""+num, j*xscale, (i+1)*yscale);
 					}

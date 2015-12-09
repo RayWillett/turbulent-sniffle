@@ -82,7 +82,7 @@ public class ArtificialPlayer{
 	 * @return
 	 */
 	public CheckersMove getNMove(Board b) {
-		return getNMove(b, this.player, 6);
+		return getNMove(b, this.player, 3);
 	}
 	
 	/**
@@ -267,7 +267,7 @@ public class ArtificialPlayer{
 	
 
 	public CheckersMove getNMove___(Board b) {
-		return getNMove___(b, this.player, 6);
+		return getNMove___(b, this.player, 3);
 	}
 	
 	public CheckersMove getNMove___(Board b, int player, int rec){
@@ -390,11 +390,11 @@ public class ArtificialPlayer{
 				
 				if(b.getPieceAt(i,j)==OUR_PIECE){
 					theyWon = false;
-					tout += OUR_POS_BIAS * pawnGrid[relI][relJ] * multiplier(b, i, j);
+					tout += OUR_POS_BIAS * pawnGrid[relI][relJ];// * multiplier(b, i, j);
 				}
 				else if(b.getPieceAt(i,j)==OUR_KING){
 					theyWon = false;
-					tout += OUR_KING_BIAS * kingGrid[relI][relJ] * multiplier(b, i, j);
+					tout += OUR_KING_BIAS * kingGrid[relI][relJ];// * multiplier(b, i, j);
 				}
 				else if(b.getPieceAt(i,j)==THEIR_PIECE){
 					weWon = false;

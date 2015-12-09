@@ -92,9 +92,10 @@ public class Main {
 			gameWon = true;
 			return;
 		}
+		
+		
+		int prev_piece;
 		CheckersMove m = null;
-		
-		
 		// Red AI move
 		if (redAI!=null) {
 			
@@ -115,6 +116,7 @@ public class Main {
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			vboard.println("RED moved: " + m.toString());
+			prev_piece = state[m.fromRow][m.fromCol];
 			CheckerRules.makeMove(m);
 			
 		// Red user move
@@ -137,12 +139,13 @@ public class Main {
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
 			// Apply the move
+			prev_piece = state[m.fromRow][m.fromCol];
 			CheckerRules.makeMove(m);
 		}
 		//if(wasJump && CheckerRules.getLegalJumpsFrom(RED, m.toCol, m.toRow) != null ) wasJump = false;
 
 		if (!wasJump) switchPlayers();
-		else if (CheckerRules.getLegalJumpsFrom(RED, m.toRow, m.toCol) == null) switchPlayers();
+		else if (prev_piece != state[m.toRow][m.toCol] || CheckerRules.getLegalJumpsFrom(RED, m.toRow, m.toCol) == null) switchPlayers();
 		
 	}
 
@@ -158,7 +161,8 @@ public class Main {
 			return;
 		}
 		
-		
+
+		int prev_piece;
 		CheckersMove m = null;
 		// Black AI move
 		if (blackAI!=null) {
@@ -171,8 +175,8 @@ public class Main {
 			
 			
 			// Make a move
-			m = blackAI.getNMove(new Board(state));
-//			m = blackAI.getNMove___(new Board(state));
+//			m = blackAI.getNMove(new Board(state));
+			m = blackAI.getNMove___(new Board(state));
 			
 			
 			
@@ -183,6 +187,7 @@ public class Main {
 			lastMove = m;
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
+			prev_piece = state[m.fromRow][m.fromCol];
 			vboard.println("BLACK moved: " + m.toString());
 			CheckerRules.makeMove(m);
 		// Black user move
@@ -203,12 +208,13 @@ public class Main {
 			}
 			if(m.isJump()) wasJump = true; // Notice jumps
 			else wasJump = false;
+			prev_piece = state[m.fromRow][m.fromCol];
 			CheckerRules.makeMove(m);
 		}		
 		//if(wasJump && CheckerRules.getLegalJumpsFrom(BLACK , m.toCol, m.toRow) != null) wasJump = false;
 
 		if (!wasJump) switchPlayers();
-		else if (CheckerRules.getLegalJumpsFrom(BLACK, m.toRow, m.toCol) == null) switchPlayers();
+		else if (prev_piece != state[m.toRow][m.toCol] || CheckerRules.getLegalJumpsFrom(BLACK, m.toRow, m.toCol) == null) switchPlayers();
 		
 	}
 
@@ -231,12 +237,12 @@ public class Main {
 		int[] temp = {
 				EMPTY,
 				EMPTY, EMPTY, EMPTY, EMPTY, 
+				BLACK_KING, BLACK_KING, BLACK_KING, BLACK_KING, 
+				EMPTY, EMPTY, EMPTY, EMPTY, 
+				RED_KING, RED, RED, RED, 
+				RED, RED, RED, RED, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
-				BLACK, BLACK, BLACK, BLACK, 
-				EMPTY, EMPTY, EMPTY, EMPTY, 
-				BLACK, BLACK, BLACK, BLACK, 
-				RED_KING, RED_KING, RED_KING, RED_KING, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 		};
 		state = CheckerRules.as2DArray(temp);
