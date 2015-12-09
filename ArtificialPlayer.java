@@ -82,6 +82,7 @@ public class ArtificialPlayer{
 	 * @return
 	 */
 	public CheckersMove getNMove(Board b) {
+		b.lastMove = Main.lastMove;
 		return getNMove(b, this.player, 3);
 	}
 	
@@ -283,7 +284,10 @@ public class ArtificialPlayer{
 			int nextPlayer = player;
 			if (!move.isJump()) nextPlayer = otherPlayer(player);
 			Board test = new Board(b, move);
-			
+			test.currentPlayer = nextPlayer;
+			test.prev_player = player;
+			test.lastMove = move;
+			test.wasJump = move.isJump();
 			Board finalState = findLikelyBoardNDeep___(test, nextPlayer, rec);
 			double val = evaluateState___(finalState, nextPlayer);
 			
@@ -311,24 +315,32 @@ public class ArtificialPlayer{
 			if (player == this.player) {
 				double bestVal = -10000000;
 				for (CheckersMove move : potentialMoves) {
-					Board test = new Board(b, move);
-					double val = evaluateState___(test, player);
+//					Board test = new Board(b, move);
+					int nextPlayer = player;
+					if (!move.isJump()) nextPlayer = otherPlayer(player);
+					Board next = new Board(b, move);
+					
+					double val = evaluateState___(next, player);
 					
 					if (val > bestVal) {
 						bestVal = val;
-						bestBoard = test;
+						bestBoard = next;
 					} 
 				}
 			// If we are finding best move for enemy player, find worst move
 			} else {
 				double bestVal = 10000000;
 				for (CheckersMove move : potentialMoves) {
-					Board test = new Board(b, move);
-					double val = evaluateState___(test, player);
+//					Board test = new Board(b, move);
 					
+					int nextPlayer = player;
+					if (!move.isJump()) nextPlayer = otherPlayer(player);
+					Board next = new Board(b, move);
+					
+					double val = evaluateState___(next, player);
 					if (val < bestVal) {
 						bestVal = val;
-						bestBoard = test;
+						bestBoard = next;
 					} 
 				}	
 			}
@@ -343,6 +355,7 @@ public class ArtificialPlayer{
 				if (!move.isJump()) nextPlayer = otherPlayer(player);
 				Board next = new Board(b, move);
 				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
+				
 				double val = evaluateState___(end, nextPlayer);
 				
 				if (val > bestVal) {
@@ -356,6 +369,7 @@ public class ArtificialPlayer{
 				int nextPlayer = player;
 				if (!move.isJump()) nextPlayer = otherPlayer(player);
 				Board next = new Board(b, move);
+				
 				Board end = findLikelyBoardNDeep(next, nextPlayer, n-1);
 				double val = evaluateState___(end, nextPlayer);
 				

@@ -35,6 +35,7 @@ public class Main {
 	static Scanner keyboard;
 	
 	static boolean wasJump = false;
+	static int prev_player;
 	static CheckersMove lastMove = null;
 	
 	/**
@@ -55,7 +56,7 @@ public class Main {
 			else
 				redMove();
 			vboard.update();
-			
+			prev_player = currentPlayer;
 			//if(!wasJump) switchPlayers(); // Switch if it wasn't a jump just made
 		}
 	}
@@ -175,8 +176,8 @@ public class Main {
 			
 			
 			// Make a move
-//			m = blackAI.getNMove(new Board(state));
-			m = blackAI.getNMove___(new Board(state));
+			m = blackAI.getNMove(new Board(state));
+//			m = blackAI.getNMove___(new Board(state));
 			
 			
 			
@@ -237,11 +238,11 @@ public class Main {
 		int[] temp = {
 				EMPTY,
 				EMPTY, EMPTY, EMPTY, EMPTY, 
+				EMPTY, EMPTY, EMPTY, EMPTY, 
 				BLACK_KING, BLACK_KING, BLACK_KING, BLACK_KING, 
-				EMPTY, EMPTY, EMPTY, EMPTY, 
 				RED_KING, RED, RED, RED, 
-				RED, RED, RED, RED, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
+				RED, RED, RED, RED, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 				EMPTY, EMPTY, EMPTY, EMPTY, 
 		};

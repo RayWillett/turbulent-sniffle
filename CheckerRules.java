@@ -155,12 +155,17 @@ public class CheckerRules {
 		if (player != RED && player != BLACK)
 			return null;
 
+		if (b.lastMove != null && b.lastMove.isJump()) {
+//			System.out.println("DOUBLE JUMP HAPPENING");
+			return getLegalJumpsFrom(b, player, b.lastMove.toRow, b.lastMove.toCol);
+		}
+
 		int playerKing;
 		if (player == RED)
 			playerKing = RED_KING;
 		else
 			playerKing = BLACK_KING;
-
+		
 		ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
 		for (int row = 0; row < 8; row++) {
 			for (int col = 0; col < 8; col++) {
@@ -193,7 +198,7 @@ public class CheckerRules {
 				}
 			}
 		}
-
+		
 		if (moves.size() == 0)
 			return null;
 		else {
@@ -207,6 +212,36 @@ public class CheckerRules {
 	/*************************************************************************************************
 	 *
 	 */
+	static CheckersMove[] getLegalJumpsFrom(Board b, int player, int row, int col) {
+		if (player != RED && player != BLACK)
+			return null;
+		int playerKing;
+		if (player == RED)
+			playerKing = RED_KING;
+		else
+			playerKing = BLACK_KING;
+		ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
+		if (b.board[row][col] == player || b.board[row][col] == playerKing) {
+			if (canJump(player, row, col, row + 1, col + 1, row + 2, col + 2))
+				moves.add(new CheckersMove(row, col, row + 2, col + 2));
+			if (canJump(player, row, col, row - 1, col + 1, row - 2, col + 2))
+				moves.add(new CheckersMove(row, col, row - 2, col + 2));
+			if (canJump(player, row, col, row + 1, col - 1, row + 2, col - 2))
+				moves.add(new CheckersMove(row, col, row + 2, col - 2));
+			if (canJump(player, row, col, row - 1, col - 1, row - 2, col - 2))
+				moves.add(new CheckersMove(row, col, row - 2, col - 2));
+		}
+		if (moves.size() == 0)
+			return null;
+		else {
+			CheckersMove[] moveArray = new CheckersMove[moves.size()];
+			for (int i = 0; i < moves.size(); i++)
+				moveArray[i] = moves.get(i);
+			return moveArray;
+		}
+	} // end getLegalJumpsFrom()
+	
+	
 	static CheckersMove[] getLegalJumpsFrom(int player, int row, int col) {
 		if (player != RED && player != BLACK)
 			return null;

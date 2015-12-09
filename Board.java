@@ -16,6 +16,9 @@ public class Board {
 
 	int[][] board;
 	public int currentPlayer;
+	boolean wasJump = false;
+	int prev_player;
+	CheckersMove lastMove = null;
 	
 	Board() {
 		board = new int[8][8];
@@ -36,6 +39,7 @@ public class Board {
 	} // end copy constructor
       
 	Board(Board r, CheckersMove move){
+		prev_player = currentPlayer;
 		if (!move.isJump()) currentPlayer = otherPlayer(currentPlayer);
 		board = new int[8][8];
 		for(int i = 0; i < 8; i++){
@@ -43,6 +47,9 @@ public class Board {
       		 		board[i][j] = r.board[i][j];
       		 	}
 		}
+		
+		if (move.isJump()) wasJump = true;
+		lastMove = move;
 		this.makeMove(move);
 	} // end move constructor
 
